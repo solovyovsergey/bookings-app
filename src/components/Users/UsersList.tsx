@@ -9,7 +9,9 @@ export default function UsersList() {
   const user = users?.[userIndex];
 
   useEffect(() => {
-    getData("http://localhost:3001/users").then((data) => setUsers(data));
+    getData("http://localhost:3001/users")
+      .then((data) => setUsers(data))
+      .catch((err) => console.error(err));
   }, []);
 
   if (users === null) {

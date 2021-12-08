@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { User } from "../../types";
+import { getData } from "../../utils/api";
 import { Spinner } from "../UI/Spinner";
 
 export default function UserPicker() {
   const [users, setUsers] = useState<User[] | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:3001/users")
-      .then((resp) => resp.json())
+    getData("http://localhost:3001/users")
       .then((data) => setUsers(data))
       .catch((err) => console.error(err));
   }, []);
