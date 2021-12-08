@@ -1,5 +1,4 @@
 import { ActionMap, Bookable } from "../../types";
-import { bookables } from "../../static.json";
 import { Reducer } from "react";
 
 type Group = string;
@@ -12,6 +11,8 @@ interface State {
   bookableIndex: BookableIndex;
   hasDetails: HasDetails;
   bookables: Bookables;
+  isLoading: boolean;
+  error: Error | null;
 }
 
 export enum Types {
@@ -19,6 +20,9 @@ export enum Types {
   setBookable = "SET_BOOKABLE",
   toggleHasDetails = "TOGGLE_HAS_DETAILS",
   nextBookable = "NEXT_BOOKABLE",
+  fetchBookablesRequest = "FETCH_BOOKABLES_REQUEST",
+  fetchBookablesSuccess = "FETCH_BOOKABLES_SUCCESS",
+  fetchBookablesError = "FETCH_BOOKABLES_ERROR",
 }
 
 type Payload = {
@@ -26,6 +30,9 @@ type Payload = {
   [Types.setBookable]: BookableIndex;
   [Types.toggleHasDetails]: undefined;
   [Types.nextBookable]: undefined;
+  [Types.fetchBookablesRequest]: undefined;
+  [Types.fetchBookablesSuccess]: Bookables;
+  [Types.fetchBookablesError]: Error;
 };
 
 type Actions = ActionMap<Payload>[keyof ActionMap<Payload>];
@@ -34,7 +41,9 @@ export const initialState: State = {
   group: "Rooms",
   bookableIndex: 0,
   hasDetails: true,
-  bookables,
+  bookables: [],
+  isLoading: true,
+  error: null,
 };
 
 export const reducer: Reducer<State, Actions> = (state, action) => {
@@ -51,6 +60,13 @@ export const reducer: Reducer<State, Actions> = (state, action) => {
       ).length;
 
       return { ...state, bookableIndex: (state.bookableIndex + 1) % count };
+
+    case Types.fetchBookablesRequest:
+      return { ...state, isLoading: true, error: null, bookables: [] };
+    case Types.fetchBookablesSuccess:
+      return { ...state, isLoading: false, bookables: action.payload };
+    case Types.fetchBookablesError:
+      return { ...state, isLoading: false, error: action.payload };
 
     default:
       return state;

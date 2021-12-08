@@ -1,9 +1,24 @@
-import { useState, Fragment } from "react";
-import { users } from "../../static.json";
+import { useState, Fragment, useEffect } from "react";
+import { User } from "../../types";
+import { getData } from "../../utils/api";
+import { Spinner } from "../UI/Spinner";
 
 export default function UsersList() {
+  const [users, setUsers] = useState<User[] | null>(null);
   const [userIndex, setUserIndex] = useState(0);
-  const user = users[userIndex];
+  const user = users?.[userIndex];
+
+  useEffect(() => {
+    getData("http://localhost:3001/users").then((data) => setUsers(data));
+  }, []);
+
+  if (users === null) {
+    return (
+      <p>
+        <Spinner /> Loading users...
+      </p>
+    );
+  }
 
   return (
     <Fragment>
