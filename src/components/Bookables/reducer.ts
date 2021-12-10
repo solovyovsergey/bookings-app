@@ -3,13 +3,11 @@ import { Reducer } from "react";
 
 type Group = string;
 type BookableIndex = number;
-type HasDetails = boolean;
 type Bookables = Bookable[];
 
-interface State {
+export interface State {
   group: Group;
   bookableIndex: BookableIndex;
-  hasDetails: HasDetails;
   bookables: Bookables;
   isLoading: boolean;
   error: Error | null;
@@ -18,7 +16,6 @@ interface State {
 export enum Types {
   setGroup = "SET_GROUP",
   setBookable = "SET_BOOKABLE",
-  toggleHasDetails = "TOGGLE_HAS_DETAILS",
   nextBookable = "NEXT_BOOKABLE",
   fetchBookablesRequest = "FETCH_BOOKABLES_REQUEST",
   fetchBookablesSuccess = "FETCH_BOOKABLES_SUCCESS",
@@ -28,19 +25,17 @@ export enum Types {
 type Payload = {
   [Types.setGroup]: { group: Group; bookableIndex: BookableIndex };
   [Types.setBookable]: BookableIndex;
-  [Types.toggleHasDetails]: undefined;
   [Types.nextBookable]: undefined;
   [Types.fetchBookablesRequest]: undefined;
   [Types.fetchBookablesSuccess]: Bookables;
   [Types.fetchBookablesError]: Error;
 };
 
-type Actions = ActionMap<Payload>[keyof ActionMap<Payload>];
+export type Actions = ActionMap<Payload>[keyof ActionMap<Payload>];
 
 export const initialState: State = {
   group: "Rooms",
   bookableIndex: 0,
-  hasDetails: true,
   bookables: [],
   isLoading: true,
   error: null,
@@ -52,8 +47,6 @@ export const reducer: Reducer<State, Actions> = (state, action) => {
       return { ...state, ...action.payload };
     case Types.setBookable:
       return { ...state, bookableIndex: action.payload };
-    case Types.toggleHasDetails:
-      return { ...state, hasDetails: !state.hasDetails };
     case Types.nextBookable:
       const count = state.bookables.filter(
         (b) => b.group === state.group
