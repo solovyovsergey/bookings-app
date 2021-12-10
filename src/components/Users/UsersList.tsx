@@ -3,18 +3,34 @@ import { User } from "../../types";
 import { getData } from "../../utils/api";
 import { Spinner } from "../UI/Spinner";
 
-export default function UsersList() {
-  const [users, setUsers] = useState<User[] | null>(null);
-  const [userIndex, setUserIndex] = useState(0);
-  const user = users?.[userIndex];
+type UserDetailsProps = {
+  user: User | null;
+  setUser: (val: User) => void;
+};
+
+export const UsersList = ({ user, setUser }: UserDetailsProps) => {
+  const [error, setError] = useState<Error | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
     getData("http://localhost:3001/users")
-      .then((data) => setUsers(data))
-      .catch((err) => console.error(err));
+      .then((data) => {
+        setUser(data[0]);
+        setUsers(data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setError(error);
+        setIsLoading(false);
+      });
   }, []);
 
-  if (users === null) {
+  if (error) {
+    return <p>{error.message}</p>;
+  }
+
+  if (isLoading) {
     return (
       <p>
         <Spinner /> Loading users...
@@ -23,28 +39,14 @@ export default function UsersList() {
   }
 
   return (
-    <Fragment>
-      <ul className="users items-list-nav">
-        {users.map((u, i) => (
-          <li key={u.id} className={i === userIndex ? "selected" : undefined}>
-            <button className="btn" onClick={() => setUserIndex(i)}>
-              {u.name}
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      {user && (
-        <div className="item user">
-          <div className="item-header">
-            <h2>{user.name}</h2>
-          </div>
-          <div className="user-details">
-            <h3>{user.title}</h3>
-            <p>{user.notes}</p>
-          </div>
-        </div>
-      )}
-    </Fragment>
+    <ul className="users items-list-nav">
+      {users.map((u) => (
+        <li key={u.id} className={u.id === user?.id ? "selected" : undefined}>
+          <button className="btn" onClick={() => setUser(u)}>
+            {u.name}
+          </button>
+        </li>
+      ))}
+    </ul>
   );
-}
+};

@@ -19,7 +19,7 @@ type Payload = {
   [Types.nextWeek]: undefined;
   [Types.prevWeek]: undefined;
   [Types.today]: undefined;
-  [Types.setDate]: number;
+  [Types.setDate]: string;
 };
 
 type Actions = ActionMap<Payload>[keyof ActionMap<Payload>];

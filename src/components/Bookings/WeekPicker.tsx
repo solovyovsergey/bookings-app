@@ -15,7 +15,7 @@ const WeekPicker: React.FC<{ date: Date }> = ({ date }) => {
   const goToDate = () => {
     dispatch({
       type: Types.setDate,
-      payload: Number(textboxRef.current?.value),
+      payload: textboxRef.current?.value || "",
     });
   };
 
