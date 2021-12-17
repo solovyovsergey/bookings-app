@@ -4,15 +4,20 @@ import { getData } from "../../utils/api";
 import { Spinner } from "../UI/Spinner";
 
 export default function UserPicker() {
-  const [users, setUsers] = useState<User[] | null>(null);
+  // TODO add loading
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getData("http://localhost:3001/users")
-      .then((data) => setUsers(data))
+      .then((data) => {
+        setUsers(data);
+        setIsLoading(false);
+      })
       .catch((err) => console.error(err));
   }, []);
 
-  if (users === null) return <Spinner />;
+  if (isLoading) return <Spinner />;
 
   return (
     <select>

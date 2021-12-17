@@ -1,4 +1,4 @@
-import { useState, Fragment, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { User } from "../../types";
 import { getData } from "../../utils/api";
 import { Spinner } from "../UI/Spinner";

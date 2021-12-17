@@ -2,7 +2,7 @@ import { Reducer } from "react";
 import { ActionMap } from "../../types";
 import { getWeek } from "../../utils/date-wrangler";
 
-type State = {
+export type Week = {
   date: Date;
   start: Date;
   end: Date;
@@ -22,9 +22,9 @@ type Payload = {
   [Types.setDate]: string;
 };
 
-type Actions = ActionMap<Payload>[keyof ActionMap<Payload>];
+export type Actions = ActionMap<Payload>[keyof ActionMap<Payload>];
 
-export const reducer: Reducer<State, Actions> = (state, action) => {
+export const reducer: Reducer<Week, Actions> = (state, action) => {
   switch (action.type) {
     case Types.nextWeek:
       return getWeek(state.date, 7);

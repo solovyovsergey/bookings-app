@@ -4,7 +4,7 @@ import { BookableDetails } from "./BookableDetails";
 import BookablesList from "./BookablesList";
 
 export const BookablesView = () => {
-  const [bookable, setBookable] = useState<Bookable>();
+  const [bookable, setBookable] = useState<Bookable | null>(null);
 
   return (
     <>

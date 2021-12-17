@@ -3,7 +3,7 @@ import { Bookable } from "../../types";
 import { sessions, days } from "../../static.json";
 
 type BookablesDetailsProps = {
-  bookable?: Bookable;
+  bookable: Bookable | null;
 };
 
 export const BookableDetails = ({ bookable }: BookablesDetailsProps) => {

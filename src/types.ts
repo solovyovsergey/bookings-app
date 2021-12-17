@@ -1,3 +1,8 @@
+export type ActionMap<M extends { [index: string]: unknown }> = {
+  [Key in keyof M]: M[Key] extends undefined
+    ? { type: Key }
+    : { type: Key; payload: M[Key] };
+};
 export interface Bookable {
   id: number;
   group: string;
@@ -15,8 +20,25 @@ export interface User {
   notes: string;
 }
 
-export type ActionMap<M extends { [index: string]: any }> = {
-  [Key in keyof M]: M[Key] extends undefined
-    ? { type: Key }
-    : { type: Key; payload: M[Key] };
-};
+export interface Booking {
+  session: string;
+  date: string;
+  bookableId: number;
+  title: string;
+  bookerId: number;
+  id: number;
+  notes?: string;
+}
+
+export type Grid = Record<
+  string,
+  Record<
+    string,
+    {
+      session: string;
+      date: string;
+      bookableId: number;
+      title: string;
+    }
+  >
+>;
