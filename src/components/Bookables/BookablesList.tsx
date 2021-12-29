@@ -1,8 +1,8 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import { getData } from "../../utils/api";
 import { Spinner } from "../UI/Spinner";
 import { Bookable } from "../../types";
+import useFetch from "../../hooks/useFetch";
 
 type BookablesListProps = {
   bookable: Bookable | null;
@@ -13,27 +13,19 @@ export default function BookablesList({
   bookable,
   setBookable,
 }: BookablesListProps) {
-  const [bookables, setBookables] = useState<Bookable[]>([]);
-  const [error, setError] = useState<Error | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const {
+    data: bookables = [],
+    isLoading,
+    error,
+  } = useFetch<Bookable[]>("http://localhost:3001/bookables");
 
   const group = bookable?.group;
-
   const bookablesInGroup = bookables.filter((b) => b.group === group);
   const groups = Array.from(new Set(bookables.map((b) => b.group)));
 
   useEffect(() => {
-    getData<Bookable[]>("http://localhost:3001/bookables")
-      .then((bookables) => {
-        setBookable(bookables[0]);
-        setBookables(bookables);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        setError(err);
-        setIsLoading(false);
-      });
-  }, []);
+    setBookable(bookables[0]);
+  }, [bookables, setBookable]);
 
   const changeGroup = (event: ChangeEvent<HTMLSelectElement>) => {
     const bookablesInSelectedGroup = bookables.filter(

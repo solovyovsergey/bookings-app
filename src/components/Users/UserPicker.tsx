@@ -1,25 +1,22 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect } from "react";
+import useFetch from "../../hooks/useFetch";
 import { User } from "../../types";
-import { getData } from "../../utils/api";
 import { Spinner } from "../UI/Spinner";
 import { useUser } from "./UserContext";
 
 export default function UserPicker() {
-  // TODO add loading
-  const [users, setUsers] = useState<User[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
   const [user, setUser] = useUser();
 
+  const {
+    data: users = [],
+    isLoading,
+    error,
+  } = useFetch<User[]>("http://localhost:3001/users");
+
   useEffect(() => {
-    getData<User[]>("http://localhost:3001/users")
-      .then((data) => {
-        setUsers(data);
-        setIsLoading(false);
-        setUser(data[0]);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+    // if users is [], setUser(undefined). Why doesn't TS show errors?
+    setUser(users[0] || null);
+  }, [users, setUser]);
 
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedID = parseInt(e.target.value, 10);
@@ -28,6 +25,9 @@ export default function UserPicker() {
   };
 
   if (isLoading) return <Spinner />;
+  if (error) {
+    return <span>{error.message}</span>;
+  }
 
   return (
     <select className="user-picker" onChange={handleSelect} value={user?.id}>
