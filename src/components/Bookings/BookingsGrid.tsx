@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import { Bookable, Booking } from "../../types";
-import { getBookings } from "../../utils/api";
 import { Spinner } from "../UI/Spinner";
 import { BookingInfo } from "./Booking";
-import { getGrid, transformBookings } from "./grid-builder";
+import { useBookings, useGrid } from "./bookingsHooks";
 import { Week } from "./weekReducer";
 
 type BookingsGridProps = {
@@ -17,40 +16,19 @@ export type ViewBookings = Record<string, Record<string, Booking>>;
 
 const BookingsGrid = (props: BookingsGridProps) => {
   const { week, bookable, booking, setBooking } = props;
-  const [bookings, setBookings] = useState<ViewBookings | null>(null);
-  const [error, setError] = useState(false);
 
-  // ! potential error if grid is undefined
-  const { grid, sessions, dates } = useMemo(
-    () =>
-      bookable
-        ? getGrid(bookable, week.start)
-        : { grid: null, dates: [], sessions: [] },
-
-    [bookable, week.start]
+  const { bookings, isLoading, error } = useBookings(
+    bookable?.id || null,
+    week.start,
+    week.end
   );
 
+  const { grid, sessions, dates } = useGrid(bookable, week.start);
+
+  // Deselect the booking when switching weeks or bookables.
   useEffect(() => {
-    if (bookable) {
-      let doUpdate = true;
-
-      setBookings(null);
-      setError(false);
-      setBooking(null);
-
-      getBookings(bookable.id, week.start, week.end)
-        .then((resp) => {
-          if (doUpdate) {
-            setBookings(transformBookings(resp));
-          }
-        })
-        .catch(setError);
-
-      return () => {
-        doUpdate = false;
-      };
-    }
-  }, [week, bookable, setBooking]);
+    setBooking(null);
+  }, [bookable, week.start, setBooking]);
 
   function cell(session: string, date: string) {
     const cellData =
@@ -62,7 +40,7 @@ const BookingsGrid = (props: BookingsGridProps) => {
       <td
         key={date}
         className={isSelected ? "selected" : undefined}
-        onClick={bookings ? () => setBooking(cellData) : undefined}
+        onClick={!isLoading ? () => setBooking(cellData) : undefined}
       >
         {cellData?.title}
       </td>
@@ -71,17 +49,17 @@ const BookingsGrid = (props: BookingsGridProps) => {
 
   // ! Loading is infinite if grid is undefined
   if (!grid) {
-    return <p>Loading...</p>;
+    return <p>Waiting for bookable and week details...</p>;
   }
 
   return (
     <>
       {error && (
         <p className="bookingsError">
-          {`There was a problem loading the bookings data (${error})`}
+          {`There was a problem loading the bookings data (${error.message})`}
         </p>
       )}
-      <table className={bookings ? "bookingsGrid active" : "bookingsGrid"}>
+      <table className={!isLoading ? "bookingsGrid active" : "bookingsGrid"}>
         <thead>
           <tr>
             <th>
