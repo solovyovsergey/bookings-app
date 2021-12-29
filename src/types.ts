@@ -39,6 +39,7 @@ export type Grid = Record<
       date: string;
       bookableId: number;
       title: string;
+      bookerId: number;
     }
   >
 >;

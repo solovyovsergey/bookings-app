@@ -1,4 +1,6 @@
+import { FaEdit } from "react-icons/fa";
 import { Bookable } from "../../types";
+import { useUser } from "../Users/UserContext";
 import { BookingInfo, BookingUI } from "./Booking";
 
 type BookingDetailsProps = {
@@ -7,9 +9,21 @@ type BookingDetailsProps = {
 };
 
 const BookingDetails = ({ booking, bookable }: BookingDetailsProps) => {
+  const [user] = useUser();
+
+  const isBooker = booking && user && booking.bookerId === user.id;
   return (
     <div className="booking-details">
-      <h2>Booking Details</h2>
+      <h2>
+        Booking Details
+        {isBooker && (
+          <span className="controls">
+            <button className="btn">
+              <FaEdit />
+            </button>
+          </span>
+        )}
+      </h2>
 
       {booking ? (
         <BookingUI booking={booking} bookable={bookable} />

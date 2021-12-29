@@ -4,6 +4,7 @@ export type BookingInfo = {
   title: string;
   date: string;
   session: string;
+  bookerId: number;
   notes?: string;
 };
 

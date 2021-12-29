@@ -14,7 +14,7 @@ export const UsersList = ({ user, setUser }: UserDetailsProps) => {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    getData("http://localhost:3001/users")
+    getData<User[]>("http://localhost:3001/users")
       .then((data) => {
         setUser(data[0]);
         setUsers(data);

@@ -4,7 +4,7 @@ import WeekPicker from "./WeekPicker";
 import BookingsGrid from "./BookingsGrid";
 import { reducer as weekReducer } from "./weekReducer";
 import { getWeek } from "../../utils/date-wrangler";
-import { Bookable, Booking } from "../../types";
+import { Bookable } from "../../types";
 import { BookingInfo } from "./Booking";
 
 type BookingsProp = {

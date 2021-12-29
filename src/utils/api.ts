@@ -1,6 +1,7 @@
+import { Booking } from "../types";
 import { shortISO } from "./date-wrangler";
 
-export const getData = (url: string) =>
+export const getData = <T>(url: string): Promise<T> =>
   fetch(url).then((resp) => {
     if (!resp.ok) throw new Error("There was a problem fetching dada");
 
@@ -19,5 +20,5 @@ export const getBookings = (
 
   const query = `bookableId=${bookableId}&date_gte=${start}&date_lte=${end}`;
 
-  return getData(`${urlRoot}?${query}`);
+  return getData<Booking[]>(`${urlRoot}?${query}`);
 };

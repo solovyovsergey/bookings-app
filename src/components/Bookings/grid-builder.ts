@@ -24,6 +24,7 @@ export const getGrid = (
           date,
           bookableId: bookable.id,
           title: "",
+          bookerId: 0, // TODO What is default value?
         })
     );
   });

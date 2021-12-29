@@ -23,7 +23,7 @@ export default function BookablesList({
   const groups = Array.from(new Set(bookables.map((b) => b.group)));
 
   useEffect(() => {
-    getData("http://localhost:3001/bookables")
+    getData<Bookable[]>("http://localhost:3001/bookables")
       .then((bookables) => {
         setBookable(bookables[0]);
         setBookables(bookables);

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Bookable, Booking, Grid } from "../../types";
+import { Bookable, Booking } from "../../types";
 import { getBookings } from "../../utils/api";
 import { Spinner } from "../UI/Spinner";
 import { BookingInfo } from "./Booking";
